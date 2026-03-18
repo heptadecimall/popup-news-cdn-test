@@ -7,7 +7,9 @@
   'use strict';
 
   // ── CONFIG ──────────────────────────────────────────────────────────────────
-  var CONFIG_URL = 'https://saasmy-755529173.development.catalystserverless.com/server/wbt-advanced_io/components?apikey=APIKEYTEST18031016apikey~';
+  var params = new URLSearchParams(window.location.search);
+  var apikey = params.get('apikey');
+  var CONFIG_URL = 'https://saasmy-755529173.development.catalystserverless.com/server/wbt-advanced_io/components?apikey=' + apikey;
 
   // ────────────────────────────────────────────────────────────────────────────
 
