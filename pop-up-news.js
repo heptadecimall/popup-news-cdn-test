@@ -9,7 +9,8 @@
   // ── CONFIG ──────────────────────────────────────────────────────────────────
   var scriptTag = document.currentScript;
   var apikey = scriptTag.getAttribute('data-apikey');
-  var CONFIG_URL = 'https://saasmy-755529173.development.catalystserverless.com/server/wbt-advanced_io/components?apikey=' + apikey;
+  var domain = window.location.hostname;
+  var CONFIG_URL = 'https://saasmy-755529173.development.catalystserverless.com/server/wbt-advanced_io/components?apikey=' + apikey + '&domain=' + domain;
 
   // ────────────────────────────────────────────────────────────────────────────
 
