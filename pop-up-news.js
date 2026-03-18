@@ -7,7 +7,7 @@
   'use strict';
 
   // ── CONFIG ──────────────────────────────────────────────────────────────────
-  var CONFIG_URL = 'https://saasmy-755529173.development.catalystserverless.com/server/wbt-advanced_io/news-popup-config';
+  var CONFIG_URL = 'https://saasmy-755529173.development.catalystserverless.com/server/wbt-advanced_io/components';
 
   // ────────────────────────────────────────────────────────────────────────────
 
