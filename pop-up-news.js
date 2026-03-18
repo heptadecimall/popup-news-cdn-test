@@ -1,10 +1,14 @@
 /*!
  * NewsDialog.js - Self-fetching popup news dialog
- * Usage: <script src="news-dialog.js" data-config="https://your-api.com/dialog.json"></script>
+ * Usage: <script src="news-dialog.js"></script>
  */
 
 (function () {
   'use strict';
+
+  // ── CONFIG ──────────────────────────────────────────────────────────────────
+  var CONFIG_URL = 'https://saasmy-755529173.development.catalystserverless.com/server/wbt-advanced_io/news-popup-config';
+  // ────────────────────────────────────────────────────────────────────────────
 
   const STYLES = `
     .nd-overlay {
@@ -98,7 +102,7 @@
 
   function injectStyles() {
     if (document.getElementById('nd-styles')) return;
-    const s = document.createElement('style');
+    var s = document.createElement('style');
     s.id = 'nd-styles';
     s.textContent = STYLES;
     document.head.appendChild(s);
@@ -120,20 +124,20 @@
   }
 
   function build(content, settings) {
-    const overlay = document.createElement('div');
+    var overlay = document.createElement('div');
     overlay.className = 'nd-overlay';
     overlay.setAttribute('role', 'dialog');
     overlay.setAttribute('aria-modal', 'true');
 
-    const imageHTML = content.imageUrl
+    var imageHTML = (content.imageUrl && content.imageUrl.trim())
       ? `<img src="${content.imageUrl}" alt="${content.title || ''}" />`
       : placeholderSVG();
 
-    const badge = content.badge || 'NEWS';
-    const badgeHTML = `<span class="nd-badge">${badge}</span>`;
-    const sepHTML = content.timestamp ? '<span class="nd-sep"></span>' : '';
-    const timeHTML = content.timestamp ? `<span class="nd-time">${content.timestamp}</span>` : '';
-    const btnText = content.buttonText || 'Read full story \u2192';
+    var badge = content.badge || 'NEWS';
+    var badgeHTML = `<span class="nd-badge">${badge}</span>`;
+    var sepHTML = content.timestamp ? '<span class="nd-sep"></span>' : '';
+    var timeHTML = content.timestamp ? `<span class="nd-time">${content.timestamp}</span>` : '';
+    var btnText = content.buttonText || 'Read full story \u2192';
 
     overlay.innerHTML = `
       <div class="nd-dialog">
@@ -156,7 +160,7 @@
 
     function close() {
       overlay.style.animation = 'nd-fade-in 0.15s ease reverse';
-      setTimeout(() => overlay.remove(), 140);
+      setTimeout(function () { overlay.remove(); }, 140);
     }
 
     overlay.querySelector('.nd-close').addEventListener('click', close);
@@ -180,39 +184,26 @@
   }
 
   function show(data) {
-    const content = data.content || {};
-    const settings = data.settings || {};
-    const delay = (settings.delaySeconds || 0) * 1000;
+    var content = data.content || {};
+    var settings = data.settings || {};
+    var delay = (settings.delaySeconds || 0) * 1000;
 
     setTimeout(function () {
       injectStyles();
-      const el = build(content, settings);
+      var el = build(content, settings);
       document.body.appendChild(el);
       el.querySelector('.nd-close').focus();
     }, delay);
   }
 
   function init() {
-    // Find this script tag and read data-config attribute
-    const script = document.currentScript ||
-      document.querySelector('script[data-config]');
-
-    const configUrl = script && script.getAttribute('data-config');
-
-    if (!configUrl) {
-      console.warn('NewsDialog: no data-config URL found on script tag.');
-      return;
-    }
-
-    fetch('https://saasmy-755529173.development.catalystserverless.com/server/wbt-advanced_io/news-popup-config')
+    fetch(CONFIG_URL)
       .then(function (res) {
         if (!res.ok) throw new Error('NewsDialog: fetch failed (' + res.status + ')');
         return res.json();
       })
       .then(show)
-      .catch(function (err) {
-        console.warn(err);
-      });
+      .catch(function (err) { console.warn(err); });
   }
 
   if (document.readyState === 'loading') {
