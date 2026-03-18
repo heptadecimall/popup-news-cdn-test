@@ -8,6 +8,7 @@
 
   // ── CONFIG ──────────────────────────────────────────────────────────────────
   var CONFIG_URL = 'https://saasmy-755529173.development.catalystserverless.com/server/wbt-advanced_io/news-popup-config';
+
   // ────────────────────────────────────────────────────────────────────────────
 
   const STYLES = `
@@ -139,6 +140,9 @@
     var timeHTML = content.timestamp ? `<span class="nd-time">${content.timestamp}</span>` : '';
     var btnText = content.buttonText || 'Read full story \u2192';
 
+    // support both 'excerpt' and 'description' keys
+    var bodyText = content.excerpt || content.description || '';
+
     overlay.innerHTML = `
       <div class="nd-dialog">
         <div class="nd-img-wrap">${imageHTML}</div>
@@ -151,7 +155,7 @@
         <div class="nd-body">
           <div class="nd-meta">${badgeHTML}${sepHTML}${timeHTML}</div>
           ${content.title ? `<h2 class="nd-title">${content.title}</h2>` : ''}
-          ${content.excerpt ? `<p class="nd-excerpt">${content.excerpt}</p>` : ''}
+          ${bodyText ? `<p class="nd-excerpt">${bodyText}</p>` : ''}
           <div class="nd-footer">
             <button class="nd-read-btn">${btnText}</button>
           </div>
@@ -196,12 +200,22 @@
     }, delay);
   }
 
+  function parseResponse(raw) {
+    // Array — grab first row
+    if (Array.isArray(raw)) raw = raw[0];
+    // Object with config_json string — parse it
+    if (raw && raw.config_json) return JSON.parse(raw.config_json);
+    // Plain object already in correct shape
+    return raw;
+  }
+
   function init() {
     fetch(CONFIG_URL)
       .then(function (res) {
         if (!res.ok) throw new Error('NewsDialog: fetch failed (' + res.status + ')');
         return res.json();
       })
+      .then(parseResponse)
       .then(show)
       .catch(function (err) { console.warn(err); });
   }
